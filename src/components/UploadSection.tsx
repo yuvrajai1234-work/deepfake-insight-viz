@@ -1,17 +1,20 @@
 import { useState, useCallback, useEffect } from "react";
-import { Upload, Video, Loader2 } from "lucide-react";
+import { Upload, Video, Loader2, Lock, UserPlus, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface UploadSectionProps {
   onVideoUpload: (file: File) => void;
   isAnalyzing: boolean;
+  isLoggedIn?: boolean;
 }
 
-const UploadSection = ({ onVideoUpload, isAnalyzing }: UploadSectionProps) => {
+const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: UploadSectionProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(0);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const steps = [
     { label: "Step 1: DETECT", sub: "Running EfficientNet CNN Analysis..." },
@@ -78,6 +81,7 @@ const UploadSection = ({ onVideoUpload, isAnalyzing }: UploadSectionProps) => {
           <div className="p-12 text-center backdrop-blur-xl">
             {isAnalyzing ? (
               <div className="flex flex-col items-center gap-6 animate-in fade-in duration-500">
+                {/* ... existing analyzing UI ... */}
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
                   <Loader2 className="h-20 w-20 text-primary animate-spin relative z-10" />
@@ -99,6 +103,39 @@ const UploadSection = ({ onVideoUpload, isAnalyzing }: UploadSectionProps) => {
                       }`}
                     />
                   ))}
+                </div>
+              </div>
+            ) : !isLoggedIn ? (
+              <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-6">
+                  <Lock className="h-12 w-12 text-primary" />
+                </div>
+                
+                <h3 className="mb-2 text-2xl font-semibold text-foreground">
+                  Authentication Required
+                </h3>
+                <p className="mb-8 text-muted-foreground mx-auto max-w-sm">
+                  Please sign in or create an account to access our advanced deepfake detection suite.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Button
+                    size="lg"
+                    onClick={() => navigate("/auth")}
+                    className="w-full sm:w-auto bg-gradient-primary hover:shadow-glow transition-all duration-300 rounded-xl"
+                  >
+                    <LogIn className="mr-2 h-5 w-5" />
+                    Sign In
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => navigate("/auth")}
+                    className="w-full sm:w-auto border-glass bg-glass hover:bg-card rounded-xl"
+                  >
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    Sign Up
+                  </Button>
                 </div>
               </div>
             ) : (

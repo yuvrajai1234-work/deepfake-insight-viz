@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Hero from "@/components/Hero";
 import UploadSection from "@/components/UploadSection";
 import AnalysisDashboard from "@/components/AnalysisDashboard";
@@ -6,10 +6,28 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleVideoUpload = (file: File) => {
     setIsAnalyzing(true);
@@ -98,7 +116,11 @@ const Index = () => {
         <main>
           <Hero />
           <div id="upload" className="scroll-mt-24">
-            <UploadSection onVideoUpload={handleVideoUpload} isAnalyzing={isAnalyzing} />
+            <UploadSection 
+              onVideoUpload={handleVideoUpload} 
+              isAnalyzing={isAnalyzing} 
+              isLoggedIn={isLoggedIn}
+            />
           </div>
           <Features />
           <UseCases />

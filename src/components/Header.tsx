@@ -1,18 +1,48 @@
-import { Shield, Menu, X } from "lucide-react";
+import { Shield, Menu, X, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setIsLoggedIn(false);
+      toast.info("Logged out successfully");
+      navigate("/");
+    }
+  };
 
   return (
     <header
@@ -51,9 +81,25 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <Button size="sm" className="rounded-full bg-gradient-primary px-6 font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-105 active:scale-95">
-                Analyze Now
-              </Button>
+              {isLoggedIn ? (
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={handleLogout}
+                  className="rounded-full border-glass hover:bg-destructive/10 hover:text-destructive group"
+                >
+                  <LogOut className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                  Logout
+                </Button>
+              ) : (
+                <Button 
+                  size="sm" 
+                  onClick={() => navigate("/auth")}
+                  className="rounded-full bg-gradient-primary px-6 font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-105 active:scale-95"
+                >
+                  Sign In
+                </Button>
+              )}
             </li>
           </ul>
         </nav>
@@ -87,9 +133,24 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <Button className="w-full rounded-xl bg-gradient-primary font-bold text-primary-foreground">
-                Analyze Now
-              </Button>
+              {isLoggedIn ? (
+                <Button 
+                  onClick={handleLogout}
+                  className="w-full rounded-xl variant-outline border-glass"
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => {
+                    navigate("/auth");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full rounded-xl bg-gradient-primary font-bold text-primary-foreground"
+                >
+                  Sign In
+                </Button>
+              )}
             </li>
           </ul>
         </div>
