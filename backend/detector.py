@@ -6,20 +6,19 @@ from PIL import Image
 from transformers import pipeline
 import numpy as np
 
-print("Loading improved deepfake detection model...")
-# Using Falconsai model - more accurate for deepfakes
+print("Loading improved deepfake detection model (ViT)...")
 try:
     deepfake_detector = pipeline(
         "image-classification",
-        model="Falconsai/deepfake_image_detection"
+        model="dima806/deepfake_vs_real_image_detection"
     )
-    print("Falconsai deepfake model loaded successfully!")
+    print("dima806 deepfake model loaded successfully!")
 except Exception as e:
-    print(f"Falconsai model error: {e}")
+    print(f"Primary model error: {e}")
     print("Falling back to alternative model...")
     deepfake_detector = pipeline(
         "image-classification",
-        model="dima806/deepfake_vs_real_image_detection"
+        model="umm-maybe/AI-image-detector"
     )
 
 face_cascade = cv2.CascadeClassifier(

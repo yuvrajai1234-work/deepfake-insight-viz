@@ -8,3 +8,8 @@ timm
 google-generativeai
 pillow
 numpy
+transformers
+boto3
+accelerate
+grpcio
+grpcio-status

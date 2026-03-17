@@ -64,11 +64,12 @@ const Index = () => {
     const localVideoUrl = URL.createObjectURL(file);
 
     try {
-      console.log("Attempting to connect to backend at http://localhost:8000/api/analyze");
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      console.log(`Attempting to connect to backend at ${API_BASE_URL}/api/analyze`);
       const formData = new FormData();
       formData.append("video", file);
 
-      const res = await fetch("http://localhost:8000/api/analyze", {
+      const res = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: "POST",
         body: formData,
       });
