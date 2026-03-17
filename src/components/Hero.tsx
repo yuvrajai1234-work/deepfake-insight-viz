@@ -18,9 +18,8 @@ const Hero = () => {
         </div>
         
         <h1 className="mb-6 text-5xl font-bold tracking-tight text-foreground md:text-7xl">
-          Real-Time
-          <span className="bg-gradient-primary bg-clip-text text-transparent"> Deepfake </span>
-          Detection
+          TruthLens
+          <span className="bg-gradient-primary bg-clip-text text-transparent"> AI </span>
         </h1>
         
         <p className="mx-auto mb-12 max-w-3xl text-lg text-muted-foreground md:text-xl">
