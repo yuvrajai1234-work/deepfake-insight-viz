@@ -64,10 +64,10 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
       <div className="mx-auto max-w-4xl">
         <div
           className={`
-            relative rounded-3xl border-2 border-dashed transition-all duration-300
+            relative rounded-[32px] border-2 border-dashed transition-all duration-300
             ${isDragging 
               ? "border-primary bg-primary/5 shadow-glow" 
-              : "border-glass bg-glass"
+              : "border-glass bg-[#0F1721]"
             }
             ${isAnalyzing ? "border-primary shadow-glow" : ""}
           `}
@@ -78,10 +78,9 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
         >
-          <div className="p-12 text-center backdrop-blur-xl">
+          <div className="p-16 text-center backdrop-blur-xl">
             {isAnalyzing ? (
               <div className="flex flex-col items-center gap-6 animate-in fade-in duration-500">
-                {/* ... existing analyzing UI ... */}
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
                   <Loader2 className="h-20 w-20 text-primary animate-spin relative z-10" />
@@ -107,14 +106,14 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
               </div>
             ) : !isLoggedIn ? (
               <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-6">
-                  <Lock className="h-12 w-12 text-primary" />
+                <div className="mb-8 inline-flex items-center justify-center rounded-[24px] bg-[#1A2533] p-8 shadow-2xl border border-glass/50">
+                  <Lock className="h-10 w-10 text-primary" />
                 </div>
                 
-                <h3 className="mb-2 text-2xl font-semibold text-foreground">
+                <h3 className="mb-2 text-3xl font-bold text-white">
                   Authentication Required
                 </h3>
-                <p className="mb-8 text-muted-foreground mx-auto max-w-sm">
+                <p className="mb-10 text-muted-foreground mx-auto max-w-sm">
                   Please sign in or create an account to access our advanced deepfake detection suite.
                 </p>
                 
@@ -122,7 +121,7 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
                   <Button
                     size="lg"
                     onClick={() => navigate("/auth")}
-                    className="w-full sm:w-auto bg-gradient-primary hover:shadow-glow transition-all duration-300 rounded-xl"
+                    className="w-full sm:w-auto bg-gradient-primary hover:shadow-glow transition-all duration-300 rounded-xl px-8"
                   >
                     <LogIn className="mr-2 h-5 w-5" />
                     Sign In
@@ -130,8 +129,8 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
                   <Button
                     size="lg"
                     variant="outline"
-                    onClick={() => navigate("/auth")}
-                    className="w-full sm:w-auto border-glass bg-glass hover:bg-card rounded-xl"
+                    onClick={() => navigate("/auth?mode=signup")}
+                    className="w-full sm:w-auto border-glass bg-glass hover:bg-card rounded-xl px-8"
                   >
                     <UserPlus className="mr-2 h-5 w-5" />
                     Sign Up
@@ -140,29 +139,29 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
               </div>
             ) : (
               <>
-                <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-6">
+                <div className="mb-8 inline-flex items-center justify-center rounded-[24px] bg-[#1A2533] p-8 shadow-2xl border border-glass/50">
                   {isDragging ? (
-                    <Upload className="h-12 w-12 text-primary animate-bounce" />
+                    <Upload className="h-10 w-10 text-primary animate-bounce" />
                   ) : (
-                    <Video className="h-12 w-12 text-primary" />
+                    <Video className="h-10 w-10 text-primary" />
                   )}
                 </div>
                 
-                <h3 className="mb-2 text-2xl font-semibold text-foreground">
+                <h3 className="mb-2 text-3xl font-bold text-white">
                   Upload Video for Analysis
                 </h3>
-                <p className="mb-8 text-muted-foreground">
+                <p className="mb-10 text-muted-foreground font-medium">
                   Drag and drop your video here, or click to browse
                 </p>
                 
                 <label htmlFor="video-upload">
                   <Button
                     size="lg"
-                    className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                    className="bg-gradient-primary hover:shadow-glow transition-all duration-300 rounded-2xl h-14 px-10 font-bold"
                     asChild
                   >
                     <span className="cursor-pointer">
-                      <Upload className="mr-2 h-5 w-5" />
+                      <Upload className="mr-3 h-5 w-5" />
                       Select Video File
                     </span>
                   </Button>
@@ -175,7 +174,7 @@ const UploadSection = ({ onVideoUpload, isAnalyzing, isLoggedIn = false }: Uploa
                   />
                 </label>
                 
-                <p className="mt-6 text-sm text-muted-foreground">
+                <p className="mt-10 text-sm font-medium text-muted-foreground">
                   Supported formats: MP4, MOV, AVI, WebM • Max size: 500MB
                 </p>
               </>

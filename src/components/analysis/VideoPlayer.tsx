@@ -10,6 +10,7 @@ interface VideoPlayerProps {
 const VideoPlayer = ({ videoUrl, selectedFrame }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (videoRef.current && selectedFrame !== null) {
@@ -45,29 +46,44 @@ const VideoPlayer = ({ videoUrl, selectedFrame }: VideoPlayerProps) => {
       </div>
 
       {/* Video */}
-      <div className="relative aspect-video bg-black">
-        <video
-          ref={videoRef}
-          src={videoUrl}
-          className="h-full w-full object-contain"
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        />
-        
-        {/* Play/Pause overlay */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Button
-            size="lg"
-            onClick={togglePlay}
-            className="h-16 w-16 rounded-full bg-glass backdrop-blur-xl hover:bg-card hover:shadow-glow"
-          >
-            {isPlaying ? (
-              <Pause className="h-6 w-6" />
-            ) : (
-              <Play className="h-6 w-6 ml-1" />
-            )}
-          </Button>
-        </div>
+      <div className="relative aspect-video bg-black flex items-center justify-center">
+        {hasError ? (
+          <div className="text-center p-8">
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+              <Pause className="h-8 w-8 text-destructive" />
+            </div>
+            <h4 className="text-xl font-bold text-foreground mb-2">Media Unaccessible</h4>
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+              This video summary uses a temporary link that has expired. New analyses will be stored permanently in our secure vault.
+            </p>
+          </div>
+        ) : (
+          <>
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className="h-full w-full object-contain"
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onError={() => setHasError(true)}
+            />
+            
+            {/* Play/Pause overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Button
+                size="lg"
+                onClick={togglePlay}
+                className="h-16 w-16 rounded-full bg-glass backdrop-blur-xl hover:bg-card hover:shadow-glow"
+              >
+                {isPlaying ? (
+                  <Pause className="h-6 w-6" />
+                ) : (
+                  <Play className="h-6 w-6 ml-1" />
+                )}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Detection markers */}
